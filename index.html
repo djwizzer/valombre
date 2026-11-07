@@ -1,0 +1,548 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Chroniques de Valombre</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@500;700;900&family=EB+Garamond:ital,wght@0,400;0,600;1,400&display=swap" rel="stylesheet">
+<style id="css">
+/* Un seul univers visuel : pierre sombre de donjon, fiches en parchemin, encre brune, or et sang. */
+:root{
+  --stone:#14100c;
+  --stone-2:#231b13;
+  --parch:#ecdcb8;
+  --parch-2:#d8c094;
+  --ink:#2b1c0f;
+  --ink-soft:#614a31;
+  --gold:#d0a548;
+  --blood:#8e1f1a;
+  --arcane:#5b3fa6;
+  --moss:#41673a;
+  --display:'Cinzel', 'Trajan Pro', Georgia, serif;
+  --body:'EB Garamond', Garamond, Georgia, serif;
+  color-scheme: dark;
+}
+*{box-sizing:border-box}
+html,body{margin:0}
+body{
+  background:
+    radial-gradient(ellipse at 50% -10%, #3a2a18 0%, transparent 60%),
+    radial-gradient(ellipse at 50% 120%, #2a1a10 0%, transparent 55%),
+    var(--stone);
+  color:var(--parch);
+  font-family:var(--body);
+  font-size:18px;
+  line-height:1.45;
+  min-height:100%;
+}
+#app{max-width:1180px;margin:0 auto;padding:20px 16px 48px;display:flex;flex-direction:column;gap:20px}
+h1,h2,h3,h4{font-family:var(--display);text-wrap:balance;margin:0}
+button,input,textarea{font:inherit}
+button{cursor:pointer}
+:focus-visible{outline:2px solid var(--gold);outline-offset:2px}
+
+/* En-tête */
+.top{display:flex;align-items:center;gap:16px;flex-wrap:wrap;border-bottom:1px solid #4a3822;padding-bottom:16px}
+.crest{width:64px;height:72px;flex:none;color:var(--gold)}
+.crest svg{width:100%;height:100%}
+.top .titles{flex:1;min-width:220px}
+.eyebrow{font-family:var(--display);font-size:12px;letter-spacing:.25em;text-transform:uppercase;color:var(--gold);margin:0 0 4px}
+h1{font-size:clamp(28px,5vw,46px);font-weight:900;letter-spacing:.04em;color:#f3e3bf;text-shadow:0 2px 0 #000,0 0 24px rgba(208,165,72,.25)}
+.sub{margin:4px 0 0;font-style:italic;color:#cdb98f}
+.status{font-family:var(--display);font-size:12px;letter-spacing:.08em;padding:6px 12px;border:1px solid #5b4529;border-radius:999px;color:#cdb98f;background:#1d160f;white-space:nowrap}
+.status.ok{border-color:#5f7f45;color:#b9d79a}
+.status.warn{border-color:#9b6a2a;color:#f0c27a}
+.status.bad{border-color:#8e1f1a;color:#f2a49e}
+
+/* Parchemin */
+.card{
+  background:
+    radial-gradient(ellipse at 20% 0%, rgba(255,255,255,.35), transparent 55%),
+    radial-gradient(ellipse at 100% 100%, rgba(120,80,30,.22), transparent 60%),
+    var(--parch);
+  color:var(--ink);
+  border:1px solid var(--parch-2);
+  border-radius:4px;
+  box-shadow:inset 0 0 0 4px var(--parch), inset 0 0 0 5px rgba(97,74,49,.35), inset 0 0 50px rgba(120,80,30,.28), 0 10px 30px rgba(0,0,0,.45);
+  padding:20px;
+}
+.card h4{font-size:13px;letter-spacing:.14em;text-transform:uppercase;color:var(--ink-soft);margin:16px 0 6px;border-bottom:1px solid rgba(97,74,49,.3);padding-bottom:3px}
+
+/* Reprise */
+.reprise{border-left:6px solid var(--blood)}
+.reprise-head{display:flex;align-items:center;gap:12px;flex-wrap:wrap;margin-bottom:8px}
+.seal{font-family:var(--display);font-size:11px;letter-spacing:.15em;text-transform:uppercase;background:var(--blood);color:#f7e6c4;padding:4px 10px;border-radius:2px}
+.reprise h2{font-size:clamp(19px,3vw,24px);color:var(--ink)}
+.reprise p{margin:0 0 12px;max-width:75ch}
+.tracker{display:grid;gap:12px}
+.order{display:flex;flex-wrap:wrap;gap:6px;align-items:center}
+.turn{border:1px solid var(--ink-soft);background:transparent;color:var(--ink);padding:6px 12px;border-radius:2px;font-family:var(--display);font-size:14px}
+.turn.on{background:var(--ink);color:var(--gold);border-color:var(--ink);box-shadow:0 0 0 2px var(--gold)}
+.btn{border:1px solid var(--blood);background:var(--blood);color:#f7e6c4;padding:6px 14px;border-radius:2px;font-family:var(--display);font-size:14px}
+.btn.ghost{background:transparent;color:var(--blood)}
+.foes{list-style:none;margin:0;padding:0;display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:8px}
+.foes li{display:flex;flex-direction:column;gap:2px}
+.foe{display:flex;justify-content:space-between;align-items:center;gap:8px;text-align:left;border:1px solid var(--ink-soft);background:rgba(255,255,255,.25);color:var(--ink);padding:8px 10px;border-radius:2px;border-left-width:5px}
+.foe span{font-family:var(--display);font-size:11px;letter-spacing:.08em;text-transform:uppercase;white-space:nowrap}
+.foe.st-actif{border-left-color:var(--blood)}
+.foe.st-actif span{color:var(--blood)}
+.foe.st-cache{border-left-color:#9b6a2a}
+.foe.st-cache span{color:#86561c}
+.foe.st-dort{border-left-color:var(--arcane)}
+.foe.st-dort span{color:var(--arcane)}
+.foe.st-mort{opacity:.55;text-decoration:line-through}
+.foes small{color:var(--ink-soft);font-style:italic;padding-left:4px}
+.hint{background:rgba(142,31,26,.08);border:1px dashed rgba(142,31,26,.5);padding:8px 12px;border-radius:2px;margin:12px 0 0!important}
+
+/* Navigation */
+nav.tabs{display:flex;gap:4px;overflow-x:auto;border-bottom:2px solid #4a3822;scrollbar-width:thin}
+nav.tabs a{font-family:var(--display);font-size:14px;letter-spacing:.06em;color:#cdb98f;text-decoration:none;padding:10px 14px;border:1px solid transparent;border-bottom:none;border-radius:4px 4px 0 0;white-space:nowrap}
+nav.tabs a[aria-current="page"]{background:var(--parch);color:var(--ink);border-color:var(--parch-2)}
+nav.tabs a:hover{color:var(--gold)}
+main{display:flex;flex-direction:column;gap:20px}
+.section-head{display:flex;justify-content:space-between;align-items:end;gap:12px;flex-wrap:wrap}
+.section-head h2{font-size:24px;color:#f3e3bf}
+.section-head p{margin:4px 0 0;color:#cdb98f;font-style:italic}
+
+/* Héros */
+.heroes{display:grid;grid-template-columns:repeat(auto-fit,minmax(300px,1fr));gap:18px}
+.hero{display:flex;flex-direction:column;border-top:6px solid var(--h)}
+.hero-ken{--h:var(--blood)}
+.hero-wizzer{--h:#3c3a36}
+.hero-ayzen{--h:var(--arcane)}
+.hero > header{display:flex;gap:12px;align-items:center}
+.sigil{width:48px;height:48px;flex:none;border-radius:50%;display:grid;place-items:center;background:var(--h);color:var(--parch);box-shadow:0 0 0 2px var(--parch),0 0 0 3px var(--h)}
+.sigil svg{width:28px;height:28px}
+.hero h3{font-size:26px;color:var(--ink)}
+.cls{margin:0;font-style:italic;color:var(--ink-soft)}
+.lbl{font-family:var(--display);font-size:12px;letter-spacing:.1em;text-transform:uppercase;color:var(--ink-soft)}
+.pv{margin-top:14px}
+.pv-row{display:flex;justify-content:space-between;align-items:baseline;font-variant-numeric:tabular-nums}
+.pv-num{font-family:var(--display);font-weight:700;font-size:20px}
+.bar{height:12px;background:rgba(43,28,15,.15);border:1px solid rgba(43,28,15,.4);border-radius:2px;overflow:hidden;margin:4px 0 6px}
+.bar i{display:block;height:100%;background:linear-gradient(#5f8a4a,#41673a)}
+.bar i.mid{background:linear-gradient(#c79a3a,#a07418)}
+.bar i.low{background:linear-gradient(#b63a2e,#8e1f1a)}
+.xpbar i{background:linear-gradient(#e2bf62,#b88a26)}
+.pv-btns{display:flex;gap:6px}
+.pv-btns button,.counter button,.add button,.xp-add button{border:1px solid var(--ink-soft);background:rgba(255,255,255,.3);color:var(--ink);border-radius:2px;padding:4px 12px;min-width:40px}
+.pv-btns button:hover,.counter button:hover,.add button:hover,.xp-add button:hover{background:var(--ink);color:var(--parch)}
+.stats{display:grid;grid-template-columns:repeat(3,1fr);gap:6px;margin:14px 0 0}
+.stats div{border:1px solid rgba(97,74,49,.45);border-radius:2px;padding:6px;text-align:center;background:rgba(255,255,255,.18)}
+.stats dt{font-family:var(--display);font-size:11px;letter-spacing:.08em;text-transform:uppercase;color:var(--ink-soft)}
+.stats dd{margin:0;font-family:var(--display);font-weight:700;font-size:18px;font-variant-numeric:tabular-nums}
+.counters{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:10px}
+.counter{display:flex;flex-direction:column;gap:4px}
+.counter > div{display:flex;align-items:center;gap:6px}
+.counter output{font-family:var(--display);font-weight:700;font-size:20px;min-width:2.4ch;text-align:center;font-variant-numeric:tabular-nums}
+.counter button{min-width:34px;padding:2px 8px}
+.xp{margin-top:12px}
+.xp-add{display:flex;gap:6px;align-items:center}
+.xp-add label{font-size:15px;color:var(--ink-soft)}
+.xp-add input,.add input,.add textarea,.notes textarea{flex:1;min-width:0;border:1px solid rgba(97,74,49,.6);background:rgba(255,255,255,.45);color:var(--ink);padding:5px 8px;border-radius:2px}
+.atk{width:100%;border-collapse:collapse;font-variant-numeric:tabular-nums}
+.atk th{font-family:var(--display);font-size:11px;letter-spacing:.08em;text-transform:uppercase;color:var(--ink-soft);text-align:left;font-weight:500;padding:2px 4px}
+.atk td{padding:4px;border-top:1px solid rgba(97,74,49,.25)}
+.atk td:not(:first-child){font-family:var(--display);font-weight:700;font-size:15px}
+.skills{display:flex;flex-wrap:wrap;gap:6px;margin:0}
+.chip{border:1px solid rgba(97,74,49,.5);border-radius:999px;padding:1px 10px;font-size:15px;background:rgba(255,255,255,.25)}
+.items{list-style:none;margin:0;padding:0}
+.items li{display:flex;justify-content:space-between;align-items:center;gap:8px;padding:3px 0;border-bottom:1px dotted rgba(97,74,49,.35)}
+.x{border:none;background:none;color:var(--ink-soft);font-size:20px;line-height:1;padding:0 6px}
+.x:hover{color:var(--blood)}
+.add{display:flex;gap:6px;margin-top:8px}
+.note{margin:12px 0 0;font-style:italic;color:var(--ink-soft);border-left:3px solid var(--h);padding-left:10px}
+.spells{display:grid;gap:6px}
+.spell{display:grid;grid-template-columns:1fr auto;gap:0 8px;text-align:left;border:1px solid var(--arcane);background:rgba(91,63,166,.1);color:var(--ink);padding:6px 10px;border-radius:2px}
+.spell b{font-family:var(--display);font-size:15px}
+.spell span{font-family:var(--display);font-size:11px;letter-spacing:.08em;text-transform:uppercase;color:var(--arcane);align-self:center}
+.spell small{grid-column:1/-1;color:var(--ink-soft);font-style:italic}
+.spell.used{border-style:dashed;opacity:.6;background:transparent}
+.spell.used span{color:var(--ink-soft)}
+.restbar{display:flex;gap:10px;align-items:center;flex-wrap:wrap}
+.restbar p{margin:0;color:#cdb98f;font-style:italic}
+
+/* Carte */
+.mapwrap{display:grid;grid-template-columns:minmax(0,2.2fr) minmax(260px,1fr);gap:18px;align-items:start}
+.mapcard{padding:10px}
+.mapcard svg{width:100%;height:auto;display:block;border-radius:2px}
+.tree{fill:#4f6b3d;stroke:#2b1c0f;stroke-width:.8}
+.tree.dk{fill:#3d5530}
+.trunk{stroke:#2b1c0f;stroke-width:1.2}
+.mtn{fill:#cfb383;stroke:#2b1c0f;stroke-width:1.4;stroke-linejoin:round}
+.mtn-back{fill:#bea271;stroke:#2b1c0f;stroke-width:1;opacity:.85}
+.mtn-shade{stroke:#2b1c0f;stroke-width:1;fill:none;opacity:.6}
+.river{fill:none;stroke:#5d7f95;stroke-width:9;stroke-linecap:round;opacity:.75}
+.river-edge{fill:none;stroke:#2b1c0f;stroke-width:11;stroke-linecap:round;opacity:.35}
+.road{fill:none;stroke:#7a5a35;stroke-width:4;stroke-dasharray:10 6;stroke-linecap:round}
+.road.walked{stroke:#8e1f1a;stroke-width:4.5}
+.trail{fill:none;stroke:#8e1f1a;stroke-width:3;stroke-dasharray:2 7;stroke-linecap:round}
+.trail-bg{fill:none;stroke:#e7d4ab;stroke-width:9;stroke-linecap:round}
+.house{fill:#b88c58;stroke:#2b1c0f;stroke-width:1.2}
+.roof{fill:#7c2b1e;stroke:#2b1c0f;stroke-width:1.2}
+.ruin{fill:#a58d6a;stroke:#2b1c0f;stroke-width:1.4}
+.hill{fill:none;stroke:#2b1c0f;stroke-width:1;opacity:.35}
+.maplbl{font-family:var(--display);font-size:15px;fill:#2b1c0f;letter-spacing:.12em}
+.maplbl.big{font-size:30px;font-weight:900;letter-spacing:.18em}
+.maplbl.it{font-family:var(--body);font-style:italic;font-size:15px;letter-spacing:0;fill:#614a31}
+.pin{cursor:pointer}
+.pin circle{stroke:#2b1c0f;stroke-width:2;fill:var(--pc)}
+.pin .pn{font-family:var(--display);font-weight:700;font-size:13px;fill:#f7e6c4;text-anchor:middle;pointer-events:none}
+.pin .pl{font-family:var(--display);font-weight:700;font-size:16px;fill:#2b1c0f;text-anchor:middle;paint-order:stroke;stroke:#ecdcb8;stroke-width:4px;stroke-linejoin:round;pointer-events:none}
+.pin.sel circle{stroke:#d0a548;stroke-width:4}
+.pin:hover circle,.pin:focus circle{stroke:#d0a548}
+.c-safe{--pc:#41673a}.c-fight{--pc:#8e1f1a}.c-done{--pc:#7a6a55}.c-danger{--pc:#2b1c0f}.c-quest{--pc:#a07418}.c-myst{--pc:#5b3fa6}
+.party path{fill:#d0a548;stroke:#2b1c0f;stroke-width:1.5}
+.party text{font-family:var(--display);font-size:10px;font-weight:700;fill:#2b1c0f;text-anchor:middle}
+.places{display:flex;flex-direction:column;gap:12px}
+.place-detail h3{font-size:22px}
+.place-detail p{margin:8px 0}
+.tag{display:inline-block;font-family:var(--display);font-size:11px;letter-spacing:.1em;text-transform:uppercase;color:#f7e6c4;background:var(--pc);padding:3px 9px;border-radius:2px}
+.placelist{list-style:none;margin:0;padding:0;display:grid;gap:4px}
+.placelist button{width:100%;display:flex;gap:10px;align-items:center;text-align:left;background:transparent;border:1px solid transparent;color:var(--ink);padding:5px 6px;border-radius:2px}
+.placelist button:hover,.placelist button.on{border-color:rgba(97,74,49,.5);background:rgba(255,255,255,.25)}
+.placelist i{width:22px;height:22px;flex:none;border-radius:50%;background:var(--pc);color:#f7e6c4;font-style:normal;font-family:var(--display);font-size:12px;font-weight:700;display:grid;place-items:center;border:1.5px solid #2b1c0f}
+.legend{display:flex;flex-wrap:wrap;gap:6px 14px;font-size:15px;color:var(--ink-soft);margin-top:8px}
+.legend span{display:inline-flex;gap:6px;align-items:center}
+.legend b{width:12px;height:12px;border-radius:50%;background:var(--pc);border:1px solid #2b1c0f;display:inline-block}
+
+/* Quêtes */
+.quests{display:grid;gap:12px}
+.quest{display:grid;grid-template-columns:auto 1fr auto;gap:12px;align-items:start}
+.check{width:34px;height:34px;border:2px solid var(--ink);background:rgba(255,255,255,.35);border-radius:2px;display:grid;place-items:center;color:var(--blood);font-size:22px;font-weight:700;padding:0}
+.quest h3{font-size:19px}
+.quest .meta{display:flex;flex-wrap:wrap;gap:6px 16px;font-size:15px;color:var(--ink-soft);margin:2px 0 4px}
+.quest p{margin:0}
+.quest.done{opacity:.62}
+.quest.done h3{text-decoration:line-through}
+.addquest{display:grid;grid-template-columns:2fr 1.4fr 1.2fr auto;gap:8px}
+.addquest input{border:1px solid rgba(97,74,49,.6);background:rgba(255,255,255,.45);color:var(--ink);padding:6px 8px;border-radius:2px;min-width:0}
+
+/* Chronique */
+.chron{list-style:none;margin:0;padding:0;display:grid;gap:0;position:relative}
+.chron li{display:grid;grid-template-columns:52px 1fr;gap:14px;padding:10px 0;position:relative}
+.chron li::before{content:"";position:absolute;left:25px;top:0;bottom:0;width:2px;background:rgba(97,74,49,.35)}
+.chron li:first-child::before{top:24px}
+.chron li:last-child::before{bottom:calc(100% - 24px)}
+.num{position:relative;z-index:1;width:52px;height:52px;border-radius:50%;background:var(--ink);color:var(--gold);font-family:var(--display);font-weight:900;font-size:20px;display:grid;place-items:center;box-shadow:0 0 0 3px var(--parch),0 0 0 4px var(--ink-soft)}
+.chron h3{font-size:19px;margin-top:4px}
+.chron p{margin:2px 0 0;max-width:70ch}
+.twocol{display:grid;grid-template-columns:minmax(0,1.6fr) minmax(260px,1fr);gap:18px;align-items:start}
+.notes textarea,.add textarea{width:100%;min-height:160px;resize:vertical;line-height:1.4}
+.stack{display:flex;flex-direction:column;gap:8px}
+
+/* Monde */
+.npcs{display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:12px}
+.npc{padding:14px 16px}
+.npc h3{font-size:18px}
+.npc .role{font-style:italic;color:var(--ink-soft);margin:0 0 6px}
+.npc p{margin:0}
+.npc.evil{border-left:5px solid var(--blood)}
+.clues{margin:0;padding-left:22px;display:grid;gap:6px}
+.clues li::marker{color:var(--blood)}
+.shop{width:100%;border-collapse:collapse;font-variant-numeric:tabular-nums}
+.shop th,.shop td{text-align:left;padding:6px 4px;border-bottom:1px solid rgba(97,74,49,.3)}
+.shop th{font-family:var(--display);font-size:12px;letter-spacing:.08em;text-transform:uppercase;color:var(--ink-soft);font-weight:500}
+.shop td:last-child{font-family:var(--display);font-weight:700;text-align:right;white-space:nowrap}
+.lore p{margin:0 0 10px;max-width:70ch}
+.rules ul{margin:0;padding-left:20px;display:grid;gap:6px}
+.rules h3{font-size:19px;margin-bottom:8px}
+.rulesgrid{display:grid;grid-template-columns:repeat(auto-fit,minmax(300px,1fr));gap:18px}
+
+.savebar{display:flex;flex-wrap:wrap;gap:10px;align-items:center;padding:14px 18px}
+.savebar p{margin:0;flex:1;min-width:220px;font-size:16px;color:var(--ink-soft)}
+.savebar textarea{width:100%;min-height:90px;border:1px solid rgba(97,74,49,.6);background:rgba(255,255,255,.45);color:var(--ink);padding:6px 8px;border-radius:2px;font-size:14px;font-family:ui-monospace,Menlo,monospace}
+.savebar .msg{width:100%;font-style:italic;color:var(--blood);margin:0}
+footer.foot{color:#8f7b5a;font-size:15px;font-style:italic;text-align:center}
+
+@media (max-width:820px){
+  .mapwrap,.twocol{grid-template-columns:1fr}
+  .addquest{grid-template-columns:1fr 1fr}
+  .addquest input:first-child{grid-column:1/-1}
+}
+@media (max-width:420px){
+  body{font-size:17px}
+  .card{padding:16px}
+  .counters{grid-template-columns:1fr}
+}
+@media (prefers-reduced-motion:no-preference){
+  .bar i{transition:width .3s ease}
+}
+</style>
+</head>
+<body>
+<div id="app"></div>
+<script id="state" type="application/json">{"savedAt":0,"turn":1,"order":["Wizzer","Ayzen","Monstres","Ken"],"partyAt":"chapelle","reprise":{"lieu":"la crypte du père Anselme","texte":"Combat dans la salle secrète sous la chapelle. Un squelette est détruit, l'autre fait face à Ken. Deux gobelins à brassard rouge hésitent dans le passage. Le sarcophage entrouvert laisse filer une lueur bleue. La hache de Ken est par terre, à ses pieds.","action":"Au tour d'Ayzen : attaque au bâton. Dé de 20 sans bonus, 13 ou plus pour toucher, puis dé de 6 de dégâts complets (arme contondante)."},"enemies":[{"n":"Squelette n°1","st":"mort","note":"Pulvérisé par le projectile magique"},{"n":"Squelette n°2","st":"actif","note":"Face à Ken, encore intact"},{"n":"Gobelin au brassard tranché","st":"cache","note":"Caché dans le passage"},{"n":"Gobelin à la lanterne","st":"cache","note":"Caché dans le passage"}],"heroes":[{"id":"ken","name":"Ken","cls":"Guerrier nain","pv":13,"pvMax":13,"ca":"17","init":11,"depl":3,"po":18,"xp":100,"ammoLabel":"Flèches","ammo":19,"attacks":[["Hache d'armes","d20+4","1d10+2"],["Arc","d20+2","1d6"]],"skills":["Vigueur +5","Voit dans le noir","Enchaînement"],"items":["Collier d'os (œil en flammes)","Armure d'écailles","Grand bouclier","Sac à dos","3 rations","Gourde d'eau"],"note":"Sa hache est restée par terre dans la crypte. Classe d'armure 15 quand il tire à l'arc."},{"id":"wizzer","name":"Wizzer","cls":"Roublard humain","pv":7,"pvMax":7,"ca":"14","init":16,"depl":6,"po":16,"xp":100,"ammoLabel":"Carreaux","ammo":28,"attacks":[["Rapière","d20+1","1d6+1"],["Dague","d20+1","1d4+1"],["Arbalète","d20+2","1d8"]],"skills":["Crochetage +6","Désamorçage +6","Discrétion +6","Déplacement silencieux +6","Attaque sournoise +1d6"],"items":["Corde de 15 m","Outils de cambrioleur","Armure de cuir","Sac à dos","Torches","Silex et amorce","2 rations","Gourde d'eau"],"note":""},{"id":"ayzen","name":"Ayzen","cls":"Magicien elfe","pv":4,"pvMax":4,"ca":"13","init":13,"depl":6,"po":18,"xp":100,"ammoLabel":"Flèches","ammo":16,"attacks":[["Bâton","d20","1d6"],["Dague","d20","1d4"],["Arc","d20+3","1d6"]],"skills":["Fouille +4","Volonté +3","Perception auditive +3","Vision elfique"],"spells":[{"n":"Projectile magique","used":true,"d":"Touche à coup sûr, 1d4+1 de dégâts"},{"n":"Sommeil","used":false,"d":"Endort plusieurs ennemis d'un coup"},{"n":"Lumière","used":false,"d":"Éclaire les environs"},{"n":"Détection de la magie","used":false,"d":"Révèle ce qui est magique"},{"n":"Lecture de la magie","used":false,"d":"Déchiffre les écrits magiques"}],"items":["Clé noire de Malzareth","Bourse à composants","Sac à dos","Torches","Silex et amorce","3 rations","Gourde d'eau"],"note":"Très fragile : il reste derrière Ken."}],"quests":[{"t":"La crypte du père Anselme","w":"Brumeval, sous la chapelle","r":"Une potion de soins","done":false,"d":"Finir le combat, découvrir ce que cache le sarcophage, montrer le collier et la clé au père Anselme."},{"t":"Sous la Tour Brisée","w":"Collines du nord","r":"La première porte","done":false,"d":"Descendre l'escalier sous la tour. L'homme en rouge a promis de vous y attendre."},{"t":"Le loup géant","w":"Ferme de Mathurin","r":"20 pièces d'or","done":false,"d":"Il attaque les moutons la nuit, à la lisière de la forêt."},{"t":"Les bûcherons disparus","w":"Le vieux pont","r":"Inconnue","done":false,"d":"Deux bûcherons vus pour la dernière fois près du vieux pont."},{"t":"Sauver Lina","w":"Tour Brisée","r":"50 pièces d'or","done":true,"d":"Lina est rentrée saine et sauve chez son père Godric."}],"chronicle":[{"t":"Le Sanglier Ivre","d":"Godric le meunier supplie qu'on sauve sa fille Lina, enlevée par les gobelins. Ken arrache la flèche plantée dans son dos (avec un morceau de dos), Ayzen cautérise à la torche. Godric survit."},{"t":"La grange","d":"Ayzen rate sa négociation, mais Bertrand vous laisse dormir dans la grange. Un rat dévore une ration de Wizzer."},{"t":"Le sentier","d":"Ayzen trouve le ruban de Lina et les traces de cinq gobelins et de leur chef. Wizzer désamorce un tronc à pointes et garde la corde."},{"t":"La Tour Brisée","d":"Attaque surprise ratée et rapière coincée. Puis la flèche parfaite d'Ayzen, la hache de Ken, et le sort de sommeil qui endort le chef et Lina. Le chef est tué, Lina est sauvée."},{"t":"Le butin","d":"15 pièces d'or, une épée rouillée, un collier d'os et une clé noire gravée d'un œil entouré de flammes."},{"t":"Brumeval","d":"Godric paie 50 pièces d'or. Ken passe la soirée à la maison aux lanternes rouges, Wizzer et Ayzen achètent des dagues chez Brok."},{"t":"La mère Ursule","d":"En touchant la clé, elle entre en transe : trois clés, trois portes, et le maître se réveillera."},{"t":"L'homme en rouge","d":"En pleine nuit, son corbeau parlant exige la clé. Vous refusez. Il vous donne rendez-vous sous la tour et disparaît dans une fumée rouge."},{"t":"Le matin","d":"Ken vise la gloire, Wizzer la richesse, Ayzen veut devenir archimage. Brok refuse le collier d'os : il porte l'œil en flammes."},{"t":"La crypte","d":"Sous la chapelle, deux gobelins à brassard rouge font ouvrir un sarcophage par deux squelettes. Le combat commence."}],"npcs":[{"n":"Godric","r":"Meunier de Brumeval","d":"Père de Lina. Blessé au dos, il vous a payé 50 pièces d'or.","e":false},{"n":"Lina","r":"Fille de Godric","d":"Enlevée par les gobelins, sauvée par vous. Elle a entendu le chef parler d'un « maître » sous la tour.","e":false},{"n":"Bertrand","r":"Tavernier du Sanglier Ivre","d":"Gros, moustachu, bourru mais généreux. Il vous offre la chambre.","e":false},{"n":"Brok","r":"Forgeron nain","d":"Vieux et grincheux, il trouve que Ken traîne en mauvaise compagnie.","e":false},{"n":"La mère Ursule","r":"Gardienne des vieilles histoires","d":"Yeux presque blancs. Elle a senti la clé et révélé la prophétie des trois portes.","e":false},{"n":"Le père Anselme","r":"Prêtre de la chapelle","d":"Le plus vieux du village après Ursule. Il connaît sûrement l'histoire de Malzareth.","e":false},{"n":"Mathurin","r":"Fermier","d":"Un loup géant attaque ses moutons. Il offre 20 pièces d'or.","e":false},{"n":"L'homme en robe rouge","r":"Ennemi","d":"Yeux rouges, corbeau parlant. Il paie les gobelins pour retrouver les trois clés.","e":true}],"clues":["Malzareth n'est pas mort : il est enfermé derrière trois portes scellées, chacune avec sa clé.","La clé noire d'Ayzen est la première. Elle ouvre une porte sous la Tour Brisée.","La clé devient brûlante quand l'homme en rouge est proche.","Si les trois portes s'ouvrent, Brumeval sera le premier village à brûler.","L'œil en flammes est le symbole de Malzareth : sur la clé, le collier d'os et le sarcophage.","Les gobelins de la crypte portent un brassard rouge, comme la robe de l'homme en rouge."],"notes":""}</script>
+<script id="code">
+(function(){
+"use strict";
+var HEAD = '<!DOCTYPE html>\n<html lang="fr">\n<head>\n<meta charset="utf-8">\n<meta name="viewport" content="width=device-width, initial-scale=1">\n<title>Chroniques de Valombre</title>\n<link rel="preconnect" href="https://fonts.googleapis.com">\n<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>\n<link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@500;700;900&family=EB+Garamond:ital,wght@0,400;0,600;1,400&display=swap" rel="stylesheet">\n';
+var LS_KEY = 'valombre-state-v1';
+var S = JSON.parse(document.getElementById('state').textContent);
+var app = document.getElementById('app');
+var cap = null, mode = 'init', timer = null, statusTxt = 'Connexion…', statusCls = '';
+var sel = S.partyAt || 'brumeval';
+var importOpen=false, saveMsg='', exportTxt='';
+
+var STATES = {actif:'Debout', dort:'Endormi', cache:'Caché', mort:'Détruit'};
+var CYCLE = ['actif','dort','cache','mort'];
+var VIEWS = [['groupe','Le groupe'],['carte','La carte'],['quetes','Quêtes'],['chronique','Chronique'],['monde','Le monde'],['regles','Règles']];
+
+var PLACES = [
+ {id:'brumeval',x:478,y:612,n:'Brumeval',c:'safe',st:'Refuge',ly:-20,d:"Votre point de départ. La taverne du Sanglier Ivre (Bertrand), la forge de Brok, le moulin de Godric, et la mère Ursule près de la cheminée."},
+ {id:'chapelle',x:566,y:640,n:'Chapelle d’Anselme',c:'fight',st:'Combat en cours',ly:28,d:"Sous la chapelle : six tombes, dont deux vides, et un trou vers une salle secrète. Un sarcophage gravé de l’œil en flammes laisse filer une lueur bleue."},
+ {id:'croisement',x:500,y:470,n:'Le croisement',c:'done',st:'Visité',ly:-18,d:"À deux heures de marche au nord du village. À gauche, la grande route qui contourne la forêt. À droite, le sentier qui traverse les bois."},
+ {id:'piege',x:586,y:382,n:'Le piège',c:'done',st:'Désamorcé',ly:-18,d:"Un tronc hérissé de pointes, désamorcé par Wizzer. Le ruban rose de Lina pendait un peu avant."},
+ {id:'tour',x:604,y:236,n:'La Tour Brisée',c:'danger',st:'À explorer',ly:28,d:"Là où Lina était retenue. Un escalier descend sous la tour, vers la première porte. L’homme en rouge a promis de vous y attendre."},
+ {id:'ferme',x:826,y:496,n:'Ferme de Mathurin',c:'quest',st:'Quête : 20 pièces d’or',ly:-18,d:"Un loup géant attaque les moutons la nuit, à la lisière de la forêt."},
+ {id:'pont',x:300,y:338,n:'Le vieux pont',c:'quest',st:'Mystère',ly:-18,d:"Deux bûcherons y ont été vus pour la dernière fois. Aucune récompense annoncée."},
+ {id:'monts',x:500,y:104,n:'Montagnes du Nord',c:'myst',st:'Légende',ly:-16,d:"Selon la légende, Malzareth y est enfermé derrière trois portes scellées."}
+];
+var LEGEND = [['safe','Refuge'],['fight','Combat'],['quest','Quête'],['done','Visité'],['danger','Danger'],['myst','Légende']];
+
+var SHOP = [['Potion de soins (rend 1d8 points de vie)',25],['Bouclier en bois',5],['Dague',3],['Paquet de 10 flèches ou carreaux',2]];
+
+var RULES = [
+ ['À la table',["Quand vous parlez entre vous, le maître du jeu ne répond pas.","Il reprend quand vous dites « continue » et finit toujours ce qu’il raconte.","« Pause » : il se tait et vous écoute."]],
+ ['Les dés',["Pour réussir une action : dé de 20 + le bonus de la fiche. Le maître du jeu donne le score à atteindre.","20 naturel : réussite éclatante. 1 naturel : échec, parfois catastrophique.","Les autres dés servent aux dégâts : d4, d6, d8, d10 (le 0 vaut 10), d12."]],
+ ['Le combat',["Ordre fixe : Wizzer (16), Ayzen (13), les monstres, Ken (11).","On peut se déplacer et attaquer dans le même tour. Qui ne fait que courir va deux fois plus loin.","On peut retarder son tour pour laisser jouer quelqu’un avant soi.","À 0 point de vie, le personnage meurt."]],
+ ['Règles maison',["Les sorts d’Ayzen marchent une fois, puis reviennent après une nuit de repos.","Enchaînement (Ken) : s’il tue un ennemi, il frappe aussitôt celui d’à côté.","Attaque sournoise (Wizzer) : 1d6 de dégâts en plus contre un ennemi qui ne l’a pas vu.","Un ennemi endormi est tué automatiquement.","Squelettes : lames et flèches font moitié moins de dégâts, armes contondantes et magie font les dégâts complets.","Un bolas fait avec la corde se prépare avant un combat, pas pendant."]],
+ ['Progression',["1 000 points d’expérience pour passer niveau 2.","L’expérience vient des monstres vaincus et des quêtes réussies.","L’or sert à acheter de l’équipement et des potions chez Brok."]]
+];
+
+var SIGILS = {
+ ken:'<svg viewBox="0 0 40 40" fill="currentColor"><rect x="18.5" y="4" width="3" height="33" rx="1"/><path d="M21 7c9 0 14 5 14 13-5-3-9-4-14-4z"/><path d="M19 7c-7 0-11 4-11 9 4-2 7-3 11-3z" opacity=".75"/></svg>',
+ wizzer:'<svg viewBox="0 0 40 40" fill="currentColor"><path d="M20 2l4 21h-8z"/><rect x="11" y="23" width="18" height="3" rx="1"/><rect x="18.5" y="26" width="3" height="9"/><circle cx="20" cy="37" r="2"/></svg>',
+ ayzen:'<svg viewBox="0 0 40 40" fill="currentColor"><path d="M20 2l3.6 11.4H35l-9.3 7 3.6 11.4L20 24.8l-9.3 7 3.6-11.4-9.3-7h11.4z"/><circle cx="20" cy="17" r="2.6" fill="#ecdcb8"/></svg>'
+};
+var CREST = '<svg viewBox="0 0 64 72"><path d="M32 2l28 9v20c0 19-12 32-28 39C16 63 4 50 4 31V11z" fill="#2b1c0f" stroke="currentColor" stroke-width="2.5"/><path d="M32 9l21 7v15c0 15-9 25-21 31-12-6-21-16-21-31V16z" fill="none" stroke="currentColor" stroke-width="1" opacity=".6"/><circle cx="32" cy="27" r="7" fill="none" stroke="currentColor" stroke-width="3"/><circle cx="32" cy="27" r="2.2" fill="currentColor"/><rect x="30.5" y="33" width="3" height="20" fill="currentColor"/><rect x="33" y="44" width="6" height="3" fill="currentColor"/><rect x="33" y="49" width="4" height="3" fill="currentColor"/><path d="M24 22c3-6 13-6 16 0" fill="none" stroke="#8e1f1a" stroke-width="2"/></svg>';
+
+function esc(s){return String(s==null?'':s).replace(/[&<>"']/g,function(c){return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c];});}
+function view(){var h=location.hash.slice(1);for(var i=0;i<VIEWS.length;i++){if(VIEWS[i][0]===h)return h;}return 'groupe';}
+function place(id){for(var i=0;i<PLACES.length;i++){if(PLACES[i].id===id)return PLACES[i];}return PLACES[0];}
+
+/* ---------- Rendu ---------- */
+function header(){
+ return '<header class="top"><div class="crest" aria-hidden="true">'+CREST+'</div><div class="titles"><p class="eyebrow">Campagne · Niveau 1</p><h1>Chroniques de Valombre</h1><p class="sub">La Clé de Malzareth, avec Ken, Wizzer et Ayzen</p></div><div class="status '+statusCls+'" id="status" role="status">'+esc(statusTxt)+'</div></header>';
+}
+function reprise(){
+ var r=S.reprise, o='';
+ for(var i=0;i<S.order.length;i++){o+='<button class="turn'+(i===S.turn?' on':'')+'" data-a="setturn" data-i="'+i+'" aria-pressed="'+(i===S.turn)+'">'+(i+1)+'. '+esc(S.order[i])+'</button>';}
+ var f='';
+ for(var j=0;j<S.enemies.length;j++){var e=S.enemies[j];f+='<li><button class="foe st-'+e.st+'" data-a="foe" data-i="'+j+'" title="Changer l’état"><b>'+esc(e.n)+'</b><span>'+STATES[e.st]+'</span></button><small>'+esc(e.note)+'</small></li>';}
+ return '<section class="card reprise" aria-labelledby="rep-t"><div class="reprise-head"><span class="seal">Partie en pause</span><h2 id="rep-t">Reprise : '+esc(r.lieu)+'</h2></div><p>'+esc(r.texte)+'</p><div class="tracker"><div class="order" aria-label="Ordre du tour">'+o+'<button class="btn" data-a="nextturn">Tour suivant</button></div><ul class="foes" aria-label="Ennemis (touchez pour changer l’état)">'+f+'</ul></div><p class="hint">'+esc(r.action)+'</p></section>';
+}
+function nav(v){
+ var s='<nav class="tabs" aria-label="Sections">';
+ for(var i=0;i<VIEWS.length;i++){s+='<a href="#'+VIEWS[i][0]+'"'+(VIEWS[i][0]===v?' aria-current="page"':'')+'>'+VIEWS[i][1]+'</a>';}
+ return s+'</nav>';
+}
+function counter(label,key,i,val){
+ return '<div class="counter"><span class="lbl">'+esc(label)+'</span><div><button data-a="cnt" data-k="'+key+'" data-h="'+i+'" data-d="-1" aria-label="'+esc(label)+' moins un">−</button><output>'+val+'</output><button data-a="cnt" data-k="'+key+'" data-h="'+i+'" data-d="1" aria-label="'+esc(label)+' plus un">+</button></div></div>';
+}
+function hero(h,i){
+ var pct=Math.max(0,h.pv)/h.pvMax*100, xp=Math.min(100,h.xp/10);
+ var atk='';for(var a=0;a<h.attacks.length;a++){atk+='<tr><td>'+esc(h.attacks[a][0])+'</td><td>'+esc(h.attacks[a][1])+'</td><td>'+esc(h.attacks[a][2])+'</td></tr>';}
+ var sp='';
+ if(h.spells){sp='<h4>Sorts</h4><div class="spells">';for(var s=0;s<h.spells.length;s++){var x=h.spells[s];sp+='<button class="spell'+(x.used?' used':'')+'" data-a="spell" data-h="'+i+'" data-j="'+s+'" aria-pressed="'+x.used+'"><b>'+esc(x.n)+'</b><span>'+(x.used?'Utilisé':'Prêt')+'</span><small>'+esc(x.d)+'</small></button>';}sp+='</div>';}
+ var sk='';for(var k=0;k<h.skills.length;k++){sk+='<span class="chip">'+esc(h.skills[k])+'</span>';}
+ var it='';for(var t=0;t<h.items.length;t++){it+='<li><span>'+esc(h.items[t])+'</span><button class="x" data-a="rmitem" data-h="'+i+'" data-j="'+t+'" aria-label="Retirer '+esc(h.items[t])+'">×</button></li>';}
+ return '<article class="card hero hero-'+h.id+'"><header><div class="sigil" aria-hidden="true">'+(SIGILS[h.id]||'')+'</div><div><h3>'+esc(h.name)+'</h3><p class="cls">'+esc(h.cls)+'</p></div></header>'+
+ '<div class="pv"><div class="pv-row"><span class="lbl">Points de vie</span><span class="pv-num">'+h.pv+' / '+h.pvMax+'</span></div><div class="bar"><i class="'+(pct<=34?'low':pct<=67?'mid':'')+'" style="width:'+pct+'%"></i></div><div class="pv-btns"><button data-a="pv" data-h="'+i+'" data-d="-1" aria-label="'+esc(h.name)+' perd un point de vie">− 1 PV</button><button data-a="pv" data-h="'+i+'" data-d="1" aria-label="'+esc(h.name)+' regagne un point de vie">+ 1 PV</button></div></div>'+
+ '<dl class="stats"><div><dt>Armure</dt><dd>'+esc(h.ca)+'</dd></div><div><dt>Initiative</dt><dd>'+h.init+'</dd></div><div><dt>Vitesse</dt><dd>'+h.depl+' cases</dd></div></dl>'+
+ '<div class="counters">'+counter('Pièces d’or','po',i,h.po)+counter(h.ammoLabel,'ammo',i,h.ammo)+'</div>'+
+ '<div class="xp"><div class="pv-row"><span class="lbl">Expérience</span><span>'+h.xp+' / 1000</span></div><div class="bar xpbar"><i style="width:'+xp+'%"></i></div><div class="xp-add"><label for="xp-'+i+'">Gain</label><input id="xp-'+i+'" type="number" inputmode="numeric" placeholder="ex. 100"><button data-a="xp" data-h="'+i+'">Ajouter</button></div></div>'+
+ '<h4>Attaques</h4><table class="atk"><thead><tr><th>Arme</th><th>Toucher</th><th>Dégâts</th></tr></thead><tbody>'+atk+'</tbody></table>'+sp+
+ '<h4>Points forts</h4><p class="skills">'+sk+'</p>'+
+ '<h4>Sac à dos</h4><ul class="items">'+it+'</ul><div class="add"><input id="item-'+i+'" placeholder="Nouvel objet" aria-label="Nouvel objet pour '+esc(h.name)+'" data-enter="additem" data-h="'+i+'"><button data-a="additem" data-h="'+i+'">Ajouter</button></div>'+
+ (h.note?'<p class="note">'+esc(h.note)+'</p>':'')+'</article>';
+}
+function vGroupe(){
+ var po=0,s='';for(var i=0;i<S.heroes.length;i++){po+=S.heroes[i].po;s+=hero(S.heroes[i],i);}
+ return '<div class="section-head"><div><h2>Le groupe</h2><p>Trésor commun : '+po+' pièces d’or. Touchez les boutons pour mettre à jour les fiches.</p></div><div class="restbar"><button class="btn" data-a="rest">Nuit de repos</button></div></div><div class="heroes">'+s+'</div>';
+}
+function rng(seed){return function(){seed=(seed*16807)%2147483647;return (seed-1)/2147483646;};}
+function mapSVG(){
+ var r=rng(7), out=[];
+ out.push('<svg viewBox="0 0 1000 720" role="img" aria-label="Carte de Valombre"><defs><filter id="paper" x="0" y="0" width="100%" height="100%"><feTurbulence type="fractalNoise" baseFrequency="0.012 0.02" numOctaves="4" seed="9"/><feColorMatrix values="0 0 0 0 0.45 0 0 0 0 0.3 0 0 0 0 0.15 0 0 0 0.55 -0.12"/></filter><radialGradient id="vig" cx="50%" cy="50%" r="70%"><stop offset="60%" stop-color="#5b3a18" stop-opacity="0"/><stop offset="100%" stop-color="#5b3a18" stop-opacity=".55"/></radialGradient></defs>');
+ out.push('<rect width="1000" height="720" fill="#e9d6ad"/><rect width="1000" height="720" filter="url(#paper)"/><rect width="1000" height="720" fill="url(#vig)"/>');
+ out.push('<rect x="10" y="10" width="980" height="700" fill="none" stroke="#2b1c0f" stroke-width="2"/><rect x="18" y="18" width="964" height="684" fill="none" stroke="#2b1c0f" stroke-width=".8"/>');
+ // Montagnes
+ var back='',front='';
+ for(var x=40;x<990;x+=46){var h=34+r()*30;back+='<path class="mtn-back" d="M'+(x-34)+' 132 L'+(x+r()*8)+' '+(132-h).toFixed(0)+' L'+(x+38)+' 132Z"/>';}
+ for(var x2=30;x2<1000;x2+=58){var h2=48+r()*48,px=x2+r()*10,b=176+r()*10;front+='<path class="mtn" d="M'+(x2-44)+' '+b.toFixed(0)+' L'+px.toFixed(0)+' '+(b-h2).toFixed(0)+' L'+(x2+46)+' '+b.toFixed(0)+'Z"/><path class="mtn-shade" d="M'+px.toFixed(0)+' '+(b-h2).toFixed(0)+' L'+(px+14).toFixed(0)+' '+(b-h2*0.45).toFixed(0)+' L'+(px+8).toFixed(0)+' '+b.toFixed(0)+'"/>';}
+ out.push(back+front);
+ // Rivière
+ out.push('<path class="river-edge" d="M24 210 C140 260 230 318 300 338 C380 360 410 450 368 560 C338 640 262 690 210 712"/><path class="river" d="M24 210 C140 260 230 318 300 338 C380 360 410 450 368 560 C338 640 262 690 210 712"/>');
+ // Collines autour de la tour
+ out.push('<ellipse class="hill" cx="604" cy="222" rx="80" ry="34"/><ellipse class="hill" cx="604" cy="222" rx="112" ry="50"/><ellipse class="hill" cx="604" cy="224" rx="146" ry="66"/>');
+ // Routes
+ out.push('<path class="road" d="M484 598 L500 470"/>');
+ out.push('<path class="road" d="M500 470 C410 452 310 420 300 338 C292 270 440 238 586 222"/>');
+ out.push('<path class="road" d="M510 606 C640 590 760 548 818 504"/>');
+ // Forêt
+ var trees=[];
+ for(var k=0;k<200;k++){var a=r()*Math.PI*2,d=Math.sqrt(r());trees.push([650+Math.cos(a)*d*185,360+Math.sin(a)*d*88,7+r()*6,r()>.5]);}
+ for(var k2=0;k2<40;k2++){var a2=r()*Math.PI*2,d2=Math.sqrt(r());trees.push([170+Math.cos(a2)*d2*95,470+Math.sin(a2)*d2*60,6+r()*5,r()>.5]);}
+ trees.sort(function(p,q){return p[1]-q[1];});
+ var tg='';for(var t=0;t<trees.length;t++){var T=trees[t],s=T[2];tg+='<g transform="translate('+T[0].toFixed(1)+' '+T[1].toFixed(1)+')"><line class="trunk" x1="0" y1="'+(s*.45).toFixed(1)+'" x2="0" y2="'+(s*.95).toFixed(1)+'"/><path class="tree'+(T[3]?' dk':'')+'" d="M0 '+(-s).toFixed(1)+' L'+(s*.7).toFixed(1)+' '+(s*.55).toFixed(1)+' L'+(-s*.7).toFixed(1)+' '+(s*.55).toFixed(1)+'Z"/></g>';}
+ out.push(tg);
+ // Sentier parcouru
+ out.push('<path class="trail-bg" d="M500 470 C540 430 580 400 586 360 C592 310 598 280 604 248"/><path class="trail" d="M484 598 L500 470 C540 430 580 400 586 360 C592 310 598 280 604 248"/>');
+ // Tour Brisée
+ out.push('<g transform="translate(604 200)"><path class="ruin" d="M-14 22 L-14 -26 L-9 -26 L-9 -32 L-3 -32 L-3 -24 L3 -28 L8 -18 L14 -22 L14 22Z"/><rect class="ruin" x="-30" y="12" width="14" height="10"/><rect class="ruin" x="16" y="15" width="18" height="7"/><rect x="-3" y="4" width="6" height="18" fill="#2b1c0f"/></g>');
+ // Village
+ var hs=[[452,584],[470,596],[498,586],[514,600],[462,616],[492,620],[520,622],[440,604]],hv='';
+ for(var v=0;v<hs.length;v++){var X=hs[v][0],Y=hs[v][1];hv+='<rect class="house" x="'+(X-8)+'" y="'+(Y-4)+'" width="16" height="11"/><path class="roof" d="M'+(X-10)+' '+(Y-4)+' L'+X+' '+(Y-13)+' L'+(X+10)+' '+(Y-4)+'Z"/>';}
+ hv+='<rect class="house" x="556" y="612" width="22" height="16"/><path class="roof" d="M553 612 L567 598 L581 612Z"/><path d="M567 584 V598 M561 590 H573" stroke="#2b1c0f" stroke-width="2.5"/>';
+ out.push(hv);
+ // Ferme
+ out.push('<rect class="house" x="842" y="482" width="24" height="14"/><path class="roof" d="M839 482 L854 470 L869 482Z"/><path d="M836 500 L880 500 M842 507 L876 507" stroke="#7a5a35" stroke-width="2"/>');
+ // Pont
+ out.push('<path d="M284 326 L316 348 M280 334 L312 356" stroke="#2b1c0f" stroke-width="3"/><path d="M286 330 L314 352" stroke="#8a6a42" stroke-width="5"/>');
+ // Libellés
+ out.push('<text class="maplbl" x="650" y="470" text-anchor="middle">Forêt Sombre</text><text class="maplbl it" x="760" y="232" text-anchor="middle">Collines du Nord</text><text class="maplbl it" x="170" y="560" text-anchor="middle">Bois des bûcherons</text><text class="maplbl it" x="120" y="262" text-anchor="middle" transform="rotate(24 120 262)">la rivière</text><text class="maplbl it" x="680" y="580" text-anchor="middle">Route de la ferme</text><text class="maplbl it" x="236" y="420" text-anchor="middle">Grande route</text>');
+ out.push('<g transform="translate(140 650)"><text class="maplbl big" x="0" y="0" text-anchor="middle">VALOMBRE</text><text class="maplbl it" x="0" y="22" text-anchor="middle">carte du maître du jeu</text></g>');
+ out.push('<g transform="translate(910 630)" stroke="#2b1c0f" fill="none"><circle r="34" stroke-width="1.2"/><circle r="27" stroke-width=".6"/><path d="M0 -40 L7 0 L0 40 L-7 0Z" fill="#2b1c0f"/><path d="M-40 0 L0 6 L40 0 L0 -6Z" fill="#8e1f1a" stroke-width=".8"/><text x="0" y="-46" text-anchor="middle" class="maplbl" stroke="none" fill="#2b1c0f">N</text></g>');
+ // Repères
+ for(var p=0;p<PLACES.length;p++){var P=PLACES[p];out.push('<g class="pin c-'+P.c+(sel===P.id?' sel':'')+'" data-a="place" data-id="'+P.id+'" tabindex="0" role="button" aria-label="'+esc(P.n)+'" transform="translate('+P.x+' '+P.y+')"><circle r="12"/><text class="pn" y="4">'+(p+1)+'</text><text class="pl" y="'+P.ly+'">'+esc(P.n)+'</text></g>');}
+ var G=place(S.partyAt);
+ out.push('<g class="party" transform="translate('+(G.x+22)+' '+(G.y-6)+')" aria-label="Position du groupe"><path d="M-11 -14 H11 V0 C11 9 4 14 0 16 C-4 14 -11 9 -11 0Z"/><text y="1">3</text></g>');
+ out.push('</svg>');
+ return out.join('');
+}
+function vCarte(){
+ var P=place(sel), here=S.partyAt===P.id, li='';
+ for(var i=0;i<PLACES.length;i++){var x=PLACES[i];li+='<li><button class="c-'+x.c+(sel===x.id?' on':'')+'" data-a="place" data-id="'+x.id+'"><i>'+(i+1)+'</i><span>'+esc(x.n)+(S.partyAt===x.id?' · le groupe est ici':'')+'</span></button></li>';}
+ var lg='';for(var l=0;l<LEGEND.length;l++){lg+='<span class="c-'+LEGEND[l][0]+'"><b></b>'+LEGEND[l][1]+'</span>';}
+ return '<div class="section-head"><div><h2>La carte de Valombre</h2><p>Touchez un lieu pour le détail. Le blason doré marque le groupe, le pointillé rouge le chemin déjà parcouru.</p></div></div>'+
+ '<div class="mapwrap"><div class="card mapcard">'+mapSVG()+'<div class="legend">'+lg+'</div></div><div class="places"><div class="card place-detail c-'+P.c+'"><span class="tag">'+esc(P.st)+'</span><h3 style="margin-top:8px">'+esc(P.n)+'</h3><p>'+esc(P.d)+'</p>'+(here?'<p><b>Le groupe est ici.</b></p>':'<button class="btn" data-a="moveparty" data-id="'+P.id+'">Placer le groupe ici</button>')+'</div><div class="card"><h4 style="margin-top:0">Tous les lieux</h4><ul class="placelist">'+li+'</ul></div></div></div>';
+}
+function vQuetes(){
+ var s='',open=0;
+ for(var i=0;i<S.quests.length;i++){var q=S.quests[i];if(!q.done)open++;s+='<article class="card quest'+(q.done?' done':'')+'"><button class="check" data-a="quest" data-i="'+i+'" aria-pressed="'+q.done+'" aria-label="Marquer « '+esc(q.t)+' » comme '+(q.done?'à faire':'terminée')+'">'+(q.done?'✓':'')+'</button><div><h3>'+esc(q.t)+'</h3><div class="meta"><span>Lieu : '+esc(q.w)+'</span><span>Récompense : '+esc(q.r)+'</span></div><p>'+esc(q.d)+'</p></div><button class="x" data-a="rmquest" data-i="'+i+'" aria-label="Supprimer la quête">×</button></article>';}
+ return '<div class="section-head"><div><h2>Les quêtes</h2><p>'+open+' en cours. Cochez une quête quand elle est terminée.</p></div></div><div class="quests">'+s+'</div>'+
+ '<div class="card"><h4 style="margin-top:0">Nouvelle quête</h4><div class="addquest"><input id="q-t" placeholder="Titre" aria-label="Titre de la quête"><input id="q-w" placeholder="Lieu" aria-label="Lieu"><input id="q-r" placeholder="Récompense" aria-label="Récompense"><button class="btn" data-a="addquest">Ajouter</button></div></div>';
+}
+function vChronique(){
+ var s='';for(var i=0;i<S.chronicle.length;i++){var c=S.chronicle[i];s+='<li><span class="num">'+(i+1)+'</span><div><h3>'+esc(c.t)+'</h3><p>'+esc(c.d)+'</p></div></li>';}
+ return '<div class="section-head"><div><h2>La chronique</h2><p>Tout ce qui s’est passé, chapitre par chapitre.</p></div></div><div class="twocol"><div class="card"><ol class="chron">'+s+'</ol></div><div class="stack"><div class="card"><h4 style="margin-top:0">Ajouter un chapitre</h4><div class="stack add"><input id="c-t" placeholder="Titre du chapitre" aria-label="Titre du chapitre"><textarea id="c-d" placeholder="Ce qui s’est passé" aria-label="Ce qui s’est passé" style="min-height:110px"></textarea><button class="btn" data-a="addchap">Ajouter à la chronique</button></div></div><div class="card notes"><h4 style="margin-top:0"><label for="notes">Notes de séance</label></h4><textarea id="notes" placeholder="Idées, plans, rappels pour la prochaine fois…">'+esc(S.notes)+'</textarea></div></div></div>';
+}
+function vMonde(){
+ var n='';for(var i=0;i<S.npcs.length;i++){var p=S.npcs[i];n+='<article class="card npc'+(p.e?' evil':'')+'"><h3>'+esc(p.n)+'</h3><p class="role">'+esc(p.r)+'</p><p>'+esc(p.d)+'</p></article>';}
+ var c='';for(var j=0;j<S.clues.length;j++){c+='<li><span>'+esc(S.clues[j])+'</span> <button class="x" data-a="rmclue" data-i="'+j+'" aria-label="Retirer cet indice">×</button></li>';}
+ var sh='';for(var k=0;k<SHOP.length;k++){sh+='<tr><td>'+esc(SHOP[k][0])+'</td><td>'+SHOP[k][1]+' po</td></tr>';}
+ return '<div class="section-head"><div><h2>Le monde</h2><p>Le royaume, ses habitants, et ce que vous avez découvert.</p></div></div>'+
+ '<div class="twocol"><div class="card lore"><h4 style="margin-top:0">Le royaume de Valombre</h4><p>Une terre de forêts et de collines. Il y a des siècles, le sorcier Malzareth y régnait, avant d’être vaincu et enfermé sous les montagnes.</p><p>Depuis quelques mois, les monstres se multiplient, et quelqu’un cherche à le libérer.</p><h4>Les indices</h4><ol class="clues">'+c+'</ol><div class="add"><input id="clue" placeholder="Nouvel indice" aria-label="Nouvel indice" data-enter="addclue"><button data-a="addclue">Ajouter</button></div></div>'+
+ '<div class="card"><h4 style="margin-top:0">La forge de Brok</h4><table class="shop"><thead><tr><th>Objet</th><th style="text-align:right">Prix</th></tr></thead><tbody>'+sh+'</tbody></table></div></div>'+
+ '<div class="section-head"><div><h2>Les personnages rencontrés</h2></div></div><div class="npcs">'+n+'</div>';
+}
+function vRegles(){
+ var s='';for(var i=0;i<RULES.length;i++){var u='';for(var j=0;j<RULES[i][1].length;j++){u+='<li>'+esc(RULES[i][1][j])+'</li>';}s+='<section class="card rules"><h3>'+esc(RULES[i][0])+'</h3><ul>'+u+'</ul></section>';}
+ return '<div class="section-head"><div><h2>Les règles de la table</h2><p>Les bases du jeu et les règles maison décidées ensemble.</p></div></div><div class="rulesgrid">'+s+'</div>';
+}
+function savebar(){
+ if(mode==='shared')return '';
+ var h='<section class="card savebar" aria-label="Partager la sauvegarde"><p>Les changements sont gardés sur cet appareil. Pour mettre tout le monde à jour, copiez la sauvegarde et envoyez-la au groupe, qui la colle ici.</p><button class="btn" data-a="export">Copier la sauvegarde</button><button class="btn ghost" data-a="toggleimport">'+(importOpen?'Fermer':'Coller une sauvegarde')+'</button>';
+ if(exportTxt)h+='<label class="lbl" for="exp" style="width:100%">Sauvegarde à copier</label><textarea id="exp" readonly>'+esc(exportTxt)+'</textarea>';
+ if(importOpen)h+='<label class="lbl" for="imp" style="width:100%">Collez ici la sauvegarde reçue</label><textarea id="imp" placeholder="Collez le texte reçu"></textarea><button class="btn" data-a="import">Charger cette sauvegarde</button>';
+ if(saveMsg)h+='<p class="msg">'+esc(saveMsg)+'</p>';
+ return h+'</section>';
+}
+var RENDER={groupe:vGroupe,carte:vCarte,quetes:vQuetes,chronique:vChronique,monde:vMonde,regles:vRegles};
+function render(){
+ var v=view(), y=window.scrollY;
+ app.innerHTML=header()+savebar()+reprise()+nav(v)+'<main>'+RENDER[v]()+'</main><footer class="foot">Les fiches papier font foi pour les caractéristiques. Cette page garde l’état de la partie.</footer>';
+ window.scrollTo(0,y);
+}
+
+/* ---------- Sauvegarde ---------- */
+function setStatus(txt,cls){statusTxt=txt;statusCls=cls||'';var el=document.getElementById('status');if(el){el.textContent=txt;el.className='status '+statusCls;}}
+function buildDoc(){
+ var css=document.getElementById('css').textContent, code=document.getElementById('code').textContent;
+ var json=JSON.stringify(S).replace(/</g,'\\u003c');
+ return HEAD+'<style id="css">'+css+'</style>\n</head>\n<body>\n<div id="app"></div>\n<script id="state" type="application/json">'+json+'<\/script>\n<script id="code">'+code+'<\/script>\n</body>\n</html>\n';
+}
+function save(){
+ if(mode==='readonly'){setStatus('Lecture seule','warn');return;}
+ setStatus('Modifications en attente…','warn');
+ clearTimeout(timer);timer=setTimeout(doSave,1600);
+}
+function doSave(){
+ S.savedAt=Date.now();
+ if(mode==='shared'&&cap){
+  setStatus('Sauvegarde…','warn');
+  Promise.resolve().then(function(){return cap.publish(buildDoc());}).then(function(){setStatus('Sauvegardé pour le groupe','ok');},function(e){
+   var c=String((e&&(e.code||e.name||e.message))||e);
+   if(/not_granted|not_writer/.test(c)){mode='readonly';setStatus('Lecture seule','warn');}
+   else if(/conflict/.test(c)){setStatus('Quelqu’un d’autre a modifié la page','warn');}
+   else{saveLocal();setStatus('Sauvegarde partagée impossible, gardée sur cet appareil','bad');}
+  });
+ } else { saveLocal(); }
+}
+function saveLocal(){try{localStorage.setItem(LS_KEY,JSON.stringify(S));setStatus('Sauvegardé sur cet appareil','ok');}catch(e){setStatus('Pas de sauvegarde possible ici','bad');}}
+function useLocal(){
+ mode='local';
+ try{var raw=localStorage.getItem(LS_KEY);if(raw){var L=JSON.parse(raw);if(L&&L.savedAt>(S.savedAt||0)){S=L;sel=S.partyAt||sel;render();}}}catch(e){}
+ setStatus('Sauvegarde sur cet appareil','ok');
+ render();
+}
+
+/* ---------- Actions ---------- */
+function clamp(n,a,b){return Math.max(a,Math.min(b,n));}
+function act(a,d){
+ var h=d.h!=null?S.heroes[+d.h]:null;
+ switch(a){
+  case 'pv': h.pv=clamp(h.pv+ +d.d,0,h.pvMax);break;
+  case 'cnt': h[d.k]=Math.max(0,h[d.k]+ +d.d);break;
+  case 'xp': var inp=document.getElementById('xp-'+d.h),n=parseInt(inp&&inp.value,10);if(!n)return;h.xp=Math.max(0,h.xp+n);break;
+  case 'spell': var sp=h.spells[+d.j];sp.used=!sp.used;break;
+  case 'additem': var ii=document.getElementById('item-'+d.h),v=ii&&ii.value.trim();if(!v)return;h.items.push(v);break;
+  case 'rmitem': h.items.splice(+d.j,1);break;
+  case 'rest': for(var i=0;i<S.heroes.length;i++){var H=S.heroes[i];H.pv=H.pvMax;if(H.spells){for(var j=0;j<H.spells.length;j++)H.spells[j].used=false;}}break;
+  case 'setturn': S.turn=+d.i;break;
+  case 'nextturn': S.turn=(S.turn+1)%S.order.length;break;
+  case 'foe': var e=S.enemies[+d.i];e.st=CYCLE[(CYCLE.indexOf(e.st)+1)%CYCLE.length];break;
+  case 'place': sel=d.id;render();return;
+  case 'moveparty': S.partyAt=d.id;break;
+  case 'quest': S.quests[+d.i].done=!S.quests[+d.i].done;break;
+  case 'rmquest': S.quests.splice(+d.i,1);break;
+  case 'addquest': var qt=val('q-t');if(!qt)return;S.quests.unshift({t:qt,w:val('q-w')||'À préciser',r:val('q-r')||'Inconnue',done:false,d:''});break;
+  case 'addchap': var ct=val('c-t'),cd=val('c-d');if(!ct&&!cd)return;S.chronicle.push({t:ct||'Nouveau chapitre',d:cd});break;
+  case 'addclue': var cl=val('clue');if(!cl)return;S.clues.push(cl);break;
+  case 'rmclue': S.clues.splice(+d.i,1);break;
+  case 'export': var txt='VALOMBRE:'+JSON.stringify(S);exportTxt='';saveMsg='';
+   if(navigator.clipboard&&navigator.clipboard.writeText){navigator.clipboard.writeText(txt).then(function(){saveMsg='Sauvegarde copiée. Collez-la dans votre groupe de discussion.';render();},function(){exportTxt=txt;saveMsg='Copie automatique refusée : sélectionnez le texte ci-dessous et copiez-le.';render();});}
+   else{exportTxt=txt;saveMsg='Sélectionnez le texte ci-dessous et copiez-le.';}
+   render();return;
+  case 'toggleimport': importOpen=!importOpen;saveMsg='';render();return;
+  case 'import': var raw=val('imp').replace(/^VALOMBRE:/,'');
+   try{var N=JSON.parse(raw);if(!N||!N.heroes||!N.quests)throw 0;S=N;sel=S.partyAt||sel;importOpen=false;saveLocal();saveMsg='Sauvegarde chargée.';render();}
+   catch(e){saveMsg='Ce texte n’est pas une sauvegarde valide. Recopiez-la en entier, depuis VALOMBRE: jusqu’à la fin.';render();}
+   return;
+  default: return;
+ }
+ render();save();
+}
+function val(id){var el=document.getElementById(id);return el?el.value.trim():'';}
+
+app.addEventListener('click',function(ev){var b=ev.target.closest('[data-a]');if(!b)return;act(b.getAttribute('data-a'),b.dataset);});
+app.addEventListener('keydown',function(ev){
+ if(ev.key!=='Enter')return;
+ var t=ev.target;
+ if(t.getAttribute&&t.getAttribute('data-enter')){ev.preventDefault();act(t.getAttribute('data-enter'),t.dataset);return;}
+ if(t.classList&&t.classList.contains('pin')){ev.preventDefault();act('place',t.dataset);}
+});
+app.addEventListener('change',function(ev){if(ev.target.id==='notes'){S.notes=ev.target.value;save();}});
+window.addEventListener('hashchange',function(){render();window.scrollTo(0,0);});
+
+render();
+if(window.claude&&typeof window.claude.use==='function'){
+ window.claude.use('artifact').then(function(ns){if(ns&&typeof ns.publish==='function'){cap=ns;mode='shared';setStatus('Partagé avec le groupe','ok');}else{useLocal();}},function(){useLocal();});
+} else { useLocal(); }
+})();
+</script>
+</body>
+</html>
