@@ -4,6 +4,8 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Chroniques de Valombre</title>
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns=%27http://www.w3.org/2000/svg%27 viewBox=%270 0 64 72%27%3E%3Cpath d=%27M32 2l28 9v20c0 19-12 32-28 39C16 63 4 50 4 31V11z%27 fill=%27%232b1c0f%27 stroke=%27%23d0a548%27 stroke-width=%274%27/%3E%3Ccircle cx=%2732%27 cy=%2727%27 r=%277%27 fill=%27none%27 stroke=%27%23d0a548%27 stroke-width=%274%27/%3E%3Crect x=%2729.5%27 y=%2733%27 width=%275%27 height=%2720%27 fill=%27%23d0a548%27/%3E%3C/svg%3E">
+<meta name="theme-color" content="#14100c">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@500;700;900&family=EB+Garamond:ital,wght@0,400;0,600;1,400&display=swap" rel="stylesheet">
@@ -255,12 +257,61 @@ main{display:flex;flex-direction:column;gap:20px}
 .savebar p{margin:0;flex:1;min-width:220px;font-size:16px;color:var(--ink-soft)}
 .savebar textarea{width:100%;min-height:90px;border:1px solid rgba(97,74,49,.6);background:rgba(255,255,255,.45);color:var(--ink);padding:6px 8px;border-radius:2px;font-size:14px;font-family:ui-monospace,Menlo,monospace}
 .savebar .msg{width:100%;font-style:italic;color:var(--blood);margin:0}
-footer.foot{color:#8f7b5a;font-size:15px;font-style:italic;text-align:center}
+
+nav.tabs{position:sticky;top:0;z-index:5;background:var(--stone);padding-top:6px}
+.topright{display:flex;flex-direction:column;align-items:flex-end;gap:6px}
+.undo{border:1px solid #5b4529;background:#1d160f;color:#cdb98f;border-radius:999px;padding:4px 12px;font-family:var(--display);font-size:12px;letter-spacing:.06em}
+.undo:disabled{opacity:.4;cursor:default}
+.undo:not(:disabled):hover{color:var(--gold);border-color:var(--gold)}
+.when{font-size:14px;color:#8f7b5a;font-style:italic}
+.roll{border:none;border-bottom:1px dashed var(--ink-soft);background:none;color:inherit;font:inherit;padding:0 2px;cursor:pointer}
+.roll:hover{color:var(--blood);border-bottom-color:var(--blood)}
+button.chip{cursor:pointer;font:inherit;font-size:15px;color:var(--ink)}
+button.chip:hover{background:var(--ink);color:var(--parch)}
+.foes li{position:relative}
+.foes .x{position:absolute;right:-6px;top:-10px;background:var(--parch);border-radius:50%;font-size:16px;width:22px;height:22px;padding:0;border:1px solid var(--ink-soft)}
+.foeadd{display:flex;gap:6px;flex-wrap:wrap}
+.foeadd input,.repedit input,.repedit textarea{flex:1;min-width:160px;border:1px solid rgba(97,74,49,.6);background:rgba(255,255,255,.45);color:var(--ink);padding:5px 8px;border-radius:2px}
+.repedit{display:grid;gap:8px;margin-bottom:12px}
+.repedit textarea{min-height:80px;width:100%}
+.linkbtn{border:none;background:none;color:var(--ink-soft);text-decoration:underline;font:inherit;font-size:15px;padding:0;cursor:pointer}
+.incoming{border-left:6px solid var(--gold);display:flex;flex-wrap:wrap;gap:10px;align-items:center}
+.incoming p{margin:0;flex:1;min-width:220px}
+/* Dés */
+.dicefab{position:fixed;right:16px;bottom:16px;z-index:20;width:64px;height:64px;border-radius:50%;border:2px solid var(--gold);background:radial-gradient(circle at 35% 30%,#a8302a,#5e120e);color:#f7e6c4;font-family:var(--display);font-weight:900;font-size:13px;box-shadow:0 6px 20px rgba(0,0,0,.6);display:grid;place-items:center}
+.dicefab svg{width:30px;height:30px;margin-bottom:-6px}
+.dicepanel{position:fixed;right:16px;bottom:92px;z-index:20;width:min(360px,calc(100vw - 32px));max-height:calc(100vh - 120px);overflow:auto;padding:16px}
+.dicepanel h3{font-size:18px;display:flex;justify-content:space-between;align-items:center}
+.dicegrid{display:grid;grid-template-columns:repeat(3,1fr);gap:6px;margin:10px 0}
+.dicegrid button{border:1px solid var(--ink);background:rgba(255,255,255,.35);color:var(--ink);padding:10px 4px;border-radius:2px;font-family:var(--display);font-weight:700;font-size:17px}
+.dicegrid button:hover{background:var(--ink);color:var(--gold)}
+.dicegrid button.d20{background:var(--blood);color:#f7e6c4;border-color:var(--blood)}
+.modrow{display:flex;gap:8px;align-items:center;justify-content:space-between}
+.modrow > div{display:flex;gap:6px;align-items:center}
+.modrow button{border:1px solid var(--ink-soft);background:rgba(255,255,255,.3);color:var(--ink);border-radius:2px;min-width:36px;padding:3px 8px}
+.modrow output{font-family:var(--display);font-weight:700;font-size:18px;min-width:3ch;text-align:center}
+.result{margin-top:12px;text-align:center;border:1px solid rgba(97,74,49,.4);border-radius:2px;padding:10px;background:rgba(255,255,255,.2)}
+.result .big{font-family:var(--display);font-weight:900;font-size:56px;line-height:1;color:var(--ink)}
+.result .what{font-family:var(--display);font-size:13px;letter-spacing:.06em;color:var(--ink-soft)}
+.result .det{font-size:15px;color:var(--ink-soft);font-variant-numeric:tabular-nums}
+.result.crit{border-color:var(--gold);box-shadow:inset 0 0 0 2px var(--gold)}
+.result.crit .big{color:#9a6c10}
+.result.fumble .big{color:var(--blood)}
+.result .flag{font-family:var(--display);font-weight:700;font-size:14px;margin-top:4px}
+.result.crit .flag{color:#9a6c10}.result.fumble .flag{color:var(--blood)}
+.hist{list-style:none;margin:10px 0 0;padding:0;font-size:15px;color:var(--ink-soft);display:grid;gap:2px}
+.hist li{display:flex;justify-content:space-between;gap:8px;border-bottom:1px dotted rgba(97,74,49,.3)}
+.hist b{font-family:var(--display);color:var(--ink)}
+footer.foot{padding-bottom:70px;color:#8f7b5a;font-size:15px;font-style:italic;text-align:center}
 
 @media (max-width:820px){
   .mapwrap,.twocol{grid-template-columns:1fr}
   .addquest{grid-template-columns:1fr 1fr}
   .addquest input:first-child{grid-column:1/-1}
+}
+@media (max-width:620px){
+  .topright{flex-direction:row;flex-wrap:wrap;align-items:center;width:100%}
+  .crest{width:48px;height:54px}
 }
 @media (max-width:420px){
   body{font-size:17px}
@@ -278,13 +329,14 @@ footer.foot{color:#8f7b5a;font-size:15px;font-style:italic;text-align:center}
 <script id="code">
 (function(){
 "use strict";
-var HEAD = '<!DOCTYPE html>\n<html lang="fr">\n<head>\n<meta charset="utf-8">\n<meta name="viewport" content="width=device-width, initial-scale=1">\n<title>Chroniques de Valombre</title>\n<link rel="preconnect" href="https://fonts.googleapis.com">\n<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>\n<link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@500;700;900&family=EB+Garamond:ital,wght@0,400;0,600;1,400&display=swap" rel="stylesheet">\n';
+var HEAD = '<!DOCTYPE html>\n<html lang="fr">\n<head>\n<meta charset="utf-8">\n<meta name="viewport" content="width=device-width, initial-scale=1">\n<title>Chroniques de Valombre</title>\n<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns=%27http://www.w3.org/2000/svg%27 viewBox=%270 0 64 72%27%3E%3Cpath d=%27M32 2l28 9v20c0 19-12 32-28 39C16 63 4 50 4 31V11z%27 fill=%27%232b1c0f%27 stroke=%27%23d0a548%27 stroke-width=%274%27/%3E%3Ccircle cx=%2732%27 cy=%2727%27 r=%277%27 fill=%27none%27 stroke=%27%23d0a548%27 stroke-width=%274%27/%3E%3Crect x=%2729.5%27 y=%2733%27 width=%275%27 height=%2720%27 fill=%27%23d0a548%27/%3E%3C/svg%3E">\n<meta name="theme-color" content="#14100c">\n<link rel="preconnect" href="https://fonts.googleapis.com">\n<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>\n<link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@500;700;900&family=EB+Garamond:ital,wght@0,400;0,600;1,400&display=swap" rel="stylesheet">\n';
 var LS_KEY = 'valombre-state-v1';
 var S = JSON.parse(document.getElementById('state').textContent);
 var app = document.getElementById('app');
 var cap = null, mode = 'init', timer = null, statusTxt = 'Connexion…', statusCls = '';
 var sel = S.partyAt || 'brumeval';
-var importOpen=false, saveMsg='', exportTxt='';
+var importOpen=false, saveMsg='', exportTxt='', repEdit=false, undoStack=[], incoming=null;
+var dice={open:false,mod:0,last:null,hist:[]};
 
 var STATES = {actif:'Debout', dort:'Endormi', cache:'Caché', mort:'Détruit'};
 var CYCLE = ['actif','dort','cache','mort'];
@@ -324,15 +376,18 @@ function view(){var h=location.hash.slice(1);for(var i=0;i<VIEWS.length;i++){if(
 function place(id){for(var i=0;i<PLACES.length;i++){if(PLACES[i].id===id)return PLACES[i];}return PLACES[0];}
 
 /* ---------- Rendu ---------- */
+function fmtDate(t){try{return new Date(t).toLocaleString('fr-FR',{weekday:'short',day:'numeric',month:'short',hour:'2-digit',minute:'2-digit'});}catch(e){return '';}}
+function rollBtn(f,who,what,label){return '<button class="roll" data-a="roll" data-f="'+esc(f)+'" data-who="'+esc(who)+'" data-what="'+esc(what)+'" title="Lancer '+esc(f)+'">'+esc(label||f)+'</button>';}
 function header(){
- return '<header class="top"><div class="crest" aria-hidden="true">'+CREST+'</div><div class="titles"><p class="eyebrow">Campagne · Niveau 1</p><h1>Chroniques de Valombre</h1><p class="sub">La Clé de Malzareth, avec Ken, Wizzer et Ayzen</p></div><div class="status '+statusCls+'" id="status" role="status">'+esc(statusTxt)+'</div></header>';
+ return '<header class="top"><div class="crest" aria-hidden="true">'+CREST+'</div><div class="titles"><p class="eyebrow">Campagne · Niveau 1</p><h1>Chroniques de Valombre</h1><p class="sub">La Clé de Malzareth, avec Ken, Wizzer et Ayzen</p></div><div class="topright"><div class="status '+statusCls+'" id="status" role="status">'+esc(statusTxt)+'</div><button class="undo" data-a="undo"'+(undoStack.length?'':' disabled')+'>Annuler la dernière action</button>'+(S.savedAt?'<span class="when">Mis à jour '+fmtDate(S.savedAt)+'</span>':'')+'</div></header>';
 }
 function reprise(){
  var r=S.reprise, o='';
  for(var i=0;i<S.order.length;i++){o+='<button class="turn'+(i===S.turn?' on':'')+'" data-a="setturn" data-i="'+i+'" aria-pressed="'+(i===S.turn)+'">'+(i+1)+'. '+esc(S.order[i])+'</button>';}
  var f='';
- for(var j=0;j<S.enemies.length;j++){var e=S.enemies[j];f+='<li><button class="foe st-'+e.st+'" data-a="foe" data-i="'+j+'" title="Changer l’état"><b>'+esc(e.n)+'</b><span>'+STATES[e.st]+'</span></button><small>'+esc(e.note)+'</small></li>';}
- return '<section class="card reprise" aria-labelledby="rep-t"><div class="reprise-head"><span class="seal">Partie en pause</span><h2 id="rep-t">Reprise : '+esc(r.lieu)+'</h2></div><p>'+esc(r.texte)+'</p><div class="tracker"><div class="order" aria-label="Ordre du tour">'+o+'<button class="btn" data-a="nextturn">Tour suivant</button></div><ul class="foes" aria-label="Ennemis (touchez pour changer l’état)">'+f+'</ul></div><p class="hint">'+esc(r.action)+'</p></section>';
+ for(var j=0;j<S.enemies.length;j++){var e=S.enemies[j];f+='<li><button class="foe st-'+e.st+'" data-a="foe" data-i="'+j+'" title="Changer l’état"><b>'+esc(e.n)+'</b><span>'+STATES[e.st]+'</span></button><button class="x" data-a="rmfoe" data-i="'+j+'" aria-label="Retirer '+esc(e.n)+'">×</button><small>'+esc(e.note)+'</small></li>';}
+ var body=repEdit?'<div class="repedit"><label class="lbl" for="r-l">Lieu</label><input id="r-l" value="'+esc(r.lieu)+'"><label class="lbl" for="r-t">Situation</label><textarea id="r-t">'+esc(r.texte)+'</textarea><label class="lbl" for="r-a">Prochaine action</label><textarea id="r-a">'+esc(r.action)+'</textarea><div><button class="btn" data-a="saverep">Enregistrer</button> <button class="btn ghost" data-a="editrep">Annuler</button></div></div>':'<p>'+esc(r.texte)+' <button class="linkbtn" data-a="editrep">Modifier</button></p>';
+ return '<section class="card reprise" aria-labelledby="rep-t"><div class="reprise-head"><span class="seal">Partie en pause</span><h2 id="rep-t">Reprise : '+esc(r.lieu)+'</h2></div>'+body+'<div class="tracker"><div class="order" aria-label="Ordre du tour">'+o+'<button class="btn" data-a="nextturn">Tour suivant</button></div><ul class="foes" aria-label="Ennemis (touchez pour changer l’état)">'+f+'</ul><div class="foeadd"><input id="foe-n" placeholder="Nouvel ennemi (ex. Loup géant)" aria-label="Nom du nouvel ennemi" data-enter="addfoe"><button class="btn ghost" data-a="addfoe">Ajouter un ennemi</button></div></div>'+(repEdit?'':'<p class="hint">'+esc(r.action)+'</p>')+'</section>';
 }
 function nav(v){
  var s='<nav class="tabs" aria-label="Sections">';
@@ -344,17 +399,17 @@ function counter(label,key,i,val){
 }
 function hero(h,i){
  var pct=Math.max(0,h.pv)/h.pvMax*100, xp=Math.min(100,h.xp/10);
- var atk='';for(var a=0;a<h.attacks.length;a++){atk+='<tr><td>'+esc(h.attacks[a][0])+'</td><td>'+esc(h.attacks[a][1])+'</td><td>'+esc(h.attacks[a][2])+'</td></tr>';}
+ var atk='';for(var a=0;a<h.attacks.length;a++){var W=h.attacks[a];atk+='<tr><td>'+esc(W[0])+'</td><td>'+rollBtn(W[1],h.name,W[0]+' · toucher')+'</td><td>'+rollBtn(W[2],h.name,W[0]+' · dégâts')+'</td></tr>';}
  var sp='';
  if(h.spells){sp='<h4>Sorts</h4><div class="spells">';for(var s=0;s<h.spells.length;s++){var x=h.spells[s];sp+='<button class="spell'+(x.used?' used':'')+'" data-a="spell" data-h="'+i+'" data-j="'+s+'" aria-pressed="'+x.used+'"><b>'+esc(x.n)+'</b><span>'+(x.used?'Utilisé':'Prêt')+'</span><small>'+esc(x.d)+'</small></button>';}sp+='</div>';}
- var sk='';for(var k=0;k<h.skills.length;k++){sk+='<span class="chip">'+esc(h.skills[k])+'</span>';}
+ var sk='';for(var k=0;k<h.skills.length;k++){var mm=/^(.*) ([+-]\d+)$/.exec(h.skills[k]);sk+=mm?'<button class="chip" data-a="roll" data-f="d20'+mm[2]+'" data-who="'+esc(h.name)+'" data-what="'+esc(mm[1])+'" title="Lancer d20'+mm[2]+'">'+esc(h.skills[k])+'</button>':'<span class="chip">'+esc(h.skills[k])+'</span>';}
  var it='';for(var t=0;t<h.items.length;t++){it+='<li><span>'+esc(h.items[t])+'</span><button class="x" data-a="rmitem" data-h="'+i+'" data-j="'+t+'" aria-label="Retirer '+esc(h.items[t])+'">×</button></li>';}
  return '<article class="card hero hero-'+h.id+'"><header><div class="sigil" aria-hidden="true">'+(SIGILS[h.id]||'')+'</div><div><h3>'+esc(h.name)+'</h3><p class="cls">'+esc(h.cls)+'</p></div></header>'+
  '<div class="pv"><div class="pv-row"><span class="lbl">Points de vie</span><span class="pv-num">'+h.pv+' / '+h.pvMax+'</span></div><div class="bar"><i class="'+(pct<=34?'low':pct<=67?'mid':'')+'" style="width:'+pct+'%"></i></div><div class="pv-btns"><button data-a="pv" data-h="'+i+'" data-d="-1" aria-label="'+esc(h.name)+' perd un point de vie">− 1 PV</button><button data-a="pv" data-h="'+i+'" data-d="1" aria-label="'+esc(h.name)+' regagne un point de vie">+ 1 PV</button></div></div>'+
  '<dl class="stats"><div><dt>Armure</dt><dd>'+esc(h.ca)+'</dd></div><div><dt>Initiative</dt><dd>'+h.init+'</dd></div><div><dt>Vitesse</dt><dd>'+h.depl+' cases</dd></div></dl>'+
  '<div class="counters">'+counter('Pièces d’or','po',i,h.po)+counter(h.ammoLabel,'ammo',i,h.ammo)+'</div>'+
  '<div class="xp"><div class="pv-row"><span class="lbl">Expérience</span><span>'+h.xp+' / 1000</span></div><div class="bar xpbar"><i style="width:'+xp+'%"></i></div><div class="xp-add"><label for="xp-'+i+'">Gain</label><input id="xp-'+i+'" type="number" inputmode="numeric" placeholder="ex. 100"><button data-a="xp" data-h="'+i+'">Ajouter</button></div></div>'+
- '<h4>Attaques</h4><table class="atk"><thead><tr><th>Arme</th><th>Toucher</th><th>Dégâts</th></tr></thead><tbody>'+atk+'</tbody></table>'+sp+
+ '<h4>Attaques <small style="text-transform:none;letter-spacing:0;font-family:var(--body);font-style:italic">· touchez un jet pour le lancer</small></h4><table class="atk"><thead><tr><th>Arme</th><th>Toucher</th><th>Dégâts</th></tr></thead><tbody>'+atk+'</tbody></table>'+sp+
  '<h4>Points forts</h4><p class="skills">'+sk+'</p>'+
  '<h4>Sac à dos</h4><ul class="items">'+it+'</ul><div class="add"><input id="item-'+i+'" placeholder="Nouvel objet" aria-label="Nouvel objet pour '+esc(h.name)+'" data-enter="additem" data-h="'+i+'"><button data-a="additem" data-h="'+i+'">Ajouter</button></div>'+
  (h.note?'<p class="note">'+esc(h.note)+'</p>':'')+'</article>';
@@ -444,12 +499,13 @@ function vRegles(){
  return '<div class="section-head"><div><h2>Les règles de la table</h2><p>Les bases du jeu et les règles maison décidées ensemble.</p></div></div><div class="rulesgrid">'+s+'</div>';
 }
 function savebar(){
- if(mode==='shared')return '';
- var h='<section class="card savebar" aria-label="Partager la sauvegarde"><p>Les changements sont gardés sur cet appareil. Pour mettre tout le monde à jour, copiez la sauvegarde et envoyez-la au groupe, qui la colle ici.</p><button class="btn" data-a="export">Copier la sauvegarde</button><button class="btn ghost" data-a="toggleimport">'+(importOpen?'Fermer':'Coller une sauvegarde')+'</button>';
+ var inc=incoming?'<section class="card incoming" aria-live="polite"><p><b>Une partie vous a été envoyée</b>'+(incoming.savedAt?', mise à jour '+esc(fmtDate(incoming.savedAt)):'')+'. La charger remplace ce qui est sur cet appareil.</p><button class="btn" data-a="loadincoming">Charger cette partie</button><button class="btn ghost" data-a="dropincoming">Ignorer</button></section>':'';
+ if(mode==='shared')return inc;
+ var h='<section class="card savebar" aria-label="Partager la sauvegarde"><p>Les changements restent sur cet appareil. Pour mettre le groupe à jour, envoyez le lien de la partie : il suffit de l’ouvrir pour la charger.</p><button class="btn" data-a="sharelink">Partager le lien de la partie</button><button class="btn ghost" data-a="export">Copier en texte</button><button class="btn ghost" data-a="toggleimport">'+(importOpen?'Fermer':'Coller un texte')+'</button>';
  if(exportTxt)h+='<label class="lbl" for="exp" style="width:100%">Sauvegarde à copier</label><textarea id="exp" readonly>'+esc(exportTxt)+'</textarea>';
  if(importOpen)h+='<label class="lbl" for="imp" style="width:100%">Collez ici la sauvegarde reçue</label><textarea id="imp" placeholder="Collez le texte reçu"></textarea><button class="btn" data-a="import">Charger cette sauvegarde</button>';
  if(saveMsg)h+='<p class="msg">'+esc(saveMsg)+'</p>';
- return h+'</section>';
+ return inc+h+'</section>';
 }
 var RENDER={groupe:vGroupe,carte:vCarte,quetes:vQuetes,chronique:vChronique,monde:vMonde,regles:vRegles};
 function render(){
@@ -493,8 +549,17 @@ function useLocal(){
 /* ---------- Actions ---------- */
 function clamp(n,a,b){return Math.max(a,Math.min(b,n));}
 function act(a,d){
- var h=d.h!=null?S.heroes[+d.h]:null;
+ var h=d.h!=null?S.heroes[+d.h]:null, before=JSON.stringify(S);
  switch(a){
+  case 'undo': if(!undoStack.length)return;S=JSON.parse(undoStack.pop());sel=S.partyAt||sel;render();save();return;
+  case 'roll': roll(d.f,d.who,d.what);return;
+  case 'editrep': repEdit=!repEdit;render();return;
+  case 'saverep': S.reprise={lieu:val('r-l')||S.reprise.lieu,texte:val('r-t'),action:val('r-a')};repEdit=false;break;
+  case 'addfoe': var fn=val('foe-n');if(!fn)return;S.enemies.push({n:fn,st:'actif',note:''});break;
+  case 'rmfoe': S.enemies.splice(+d.i,1);break;
+  case 'sharelink': shareLink();return;
+  case 'loadincoming': if(!incoming)return;undoStack.push(before);S=incoming;incoming=null;sel=S.partyAt||sel;saveLocal();saveMsg='Partie chargée.';render();return;
+  case 'dropincoming': incoming=null;render();return;
   case 'pv': h.pv=clamp(h.pv+ +d.d,0,h.pvMax);break;
   case 'cnt': h[d.k]=Math.max(0,h[d.k]+ +d.d);break;
   case 'xp': var inp=document.getElementById('xp-'+d.h),n=parseInt(inp&&inp.value,10);if(!n)return;h.xp=Math.max(0,h.xp+n);break;
@@ -519,14 +584,77 @@ function act(a,d){
    render();return;
   case 'toggleimport': importOpen=!importOpen;saveMsg='';render();return;
   case 'import': var raw=val('imp').replace(/^VALOMBRE:/,'');
-   try{var N=JSON.parse(raw);if(!N||!N.heroes||!N.quests)throw 0;S=N;sel=S.partyAt||sel;importOpen=false;saveLocal();saveMsg='Sauvegarde chargée.';render();}
+   try{var N=JSON.parse(raw);if(!N||!N.heroes||!N.quests)throw 0;undoStack.push(before);S=N;sel=S.partyAt||sel;importOpen=false;saveLocal();saveMsg='Sauvegarde chargée.';render();}
    catch(e){saveMsg='Ce texte n’est pas une sauvegarde valide. Recopiez-la en entier, depuis VALOMBRE: jusqu’à la fin.';render();}
    return;
   default: return;
  }
+ undoStack.push(before);if(undoStack.length>40)undoStack.shift();
  render();save();
 }
 function val(id){var el=document.getElementById(id);return el?el.value.trim():'';}
+
+/* ---------- Dés ---------- */
+var diceBox=document.createElement('div');document.body.appendChild(diceBox);
+var D20ICON='<svg viewBox="0 0 40 40" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round"><path d="M20 3l15 8.5v17L20 37 5 28.5v-17z"/><path d="M20 3L11 23h18zM11 23l9 14 9-14M5 11.5L11 23M35 11.5L29 23M5 28.5L11 23M35 28.5L29 23"/></svg>';
+function rnd(n){try{var a=new Uint32Array(1);crypto.getRandomValues(a);return a[0]%n+1;}catch(e){return Math.floor(Math.random()*n)+1;}}
+function roll(f,who,what){
+ var m=/^(\d*)d(\d+)([+-]\d+)?$/.exec(String(f).replace(/\s/g,''));if(!m)return;
+ var n=+(m[1]||1),sides=+m[2],mod=+(m[3]||0),rolls=[],sum=0;
+ for(var i=0;i<n;i++){var r=rnd(sides);rolls.push(r);sum+=r;}
+ var res={f:f,who:who||'',what:what||'',rolls:rolls,mod:mod,total:sum+mod,crit:sides===20&&n===1&&rolls[0]===20,fumble:sides===20&&n===1&&rolls[0]===1};
+ dice.last=res;dice.open=true;dice.hist.unshift(res);if(dice.hist.length>8)dice.hist.pop();
+ renderDice(true);
+}
+function renderDice(anim){
+ var b='<button class="dicefab" data-a="dtoggle" aria-expanded="'+dice.open+'" aria-label="Lanceur de dés">'+D20ICON+'<span>Dés</span></button>';
+ if(dice.open){
+  var g='';[4,6,8,10,12,20].forEach(function(x){g+='<button class="d'+x+'" data-a="droll" data-s="'+x+'">d'+x+'</button>';});
+  var L=dice.last,r='';
+  if(L){r='<div class="result'+(L.crit?' crit':L.fumble?' fumble':'')+'" aria-live="polite">'+(L.who||L.what?'<div class="what">'+esc([L.who,L.what].filter(Boolean).join(' · '))+'</div>':'')+'<div class="big" id="dbig">'+L.total+'</div><div class="det">'+esc(L.f)+' : '+L.rolls.join(' + ')+(L.mod?(L.mod>0?' + ':' − ')+Math.abs(L.mod):'')+'</div>'+(L.crit?'<div class="flag">20 naturel : réussite éclatante !</div>':L.fumble?'<div class="flag">1 naturel : échec critique !</div>':'')+'</div>';}
+  var h='';for(var i=1;i<dice.hist.length;i++){var H=dice.hist[i];h+='<li><span>'+esc(H.who?H.who+' · '+H.what:H.f)+'</span><b>'+H.total+'</b></li>';}
+  b+='<section class="card dicepanel" aria-label="Lanceur de dés"><h3>Lancer les dés <button class="x" data-a="dtoggle" aria-label="Fermer">×</button></h3><div class="dicegrid">'+g+'</div><div class="modrow"><span class="lbl">Bonus</span><div><button data-a="dmod" data-d="-1" aria-label="Bonus moins un">−</button><output>'+(dice.mod>0?'+':'')+dice.mod+'</output><button data-a="dmod" data-d="1" aria-label="Bonus plus un">+</button></div></div>'+r+(h?'<ul class="hist">'+h+'</ul>':'')+'</section>';
+ }
+ diceBox.innerHTML=b;
+ if(anim&&dice.last&&!(window.matchMedia&&matchMedia('(prefers-reduced-motion: reduce)').matches)){
+  var el=document.getElementById('dbig'),k=0,fin=dice.last.total,sides=+(/d(\d+)/.exec(dice.last.f)||[0,20])[1];
+  var t=setInterval(function(){if(!el)return clearInterval(t);if(++k>8){el.textContent=fin;clearInterval(t);return;}el.textContent=rnd(sides);},45);
+ }
+}
+diceBox.addEventListener('click',function(ev){
+ var b=ev.target.closest('[data-a]');if(!b)return;var a=b.getAttribute('data-a');
+ if(a==='dtoggle'){dice.open=!dice.open;renderDice(false);}
+ else if(a==='dmod'){dice.mod+= +b.dataset.d;renderDice(false);}
+ else if(a==='droll'){var m=dice.mod;roll('d'+b.dataset.s+(m?(m>0?'+':'')+m:''),'','');}
+});
+
+/* ---------- Partage par lien ---------- */
+function b64u(bytes){var s='';for(var i=0;i<bytes.length;i++)s+=String.fromCharCode(bytes[i]);return btoa(s).replace(/\+/g,'-').replace(/\//g,'_').replace(/=+$/,'');}
+function unb64u(str){str=str.replace(/-/g,'+').replace(/_/g,'/');while(str.length%4)str+='=';var s=atob(str),a=new Uint8Array(s.length);for(var i=0;i<s.length;i++)a[i]=s.charCodeAt(i);return a;}
+function encodeState(){
+ var bytes=new TextEncoder().encode(JSON.stringify(S));
+ if(typeof CompressionStream==='undefined')return Promise.resolve('u'+b64u(bytes));
+ return new Response(new Blob([bytes]).stream().pipeThrough(new CompressionStream('deflate-raw'))).arrayBuffer().then(function(buf){return 'z'+b64u(new Uint8Array(buf));});
+}
+function decodeState(code){
+ var kind=code.charAt(0),bytes=unb64u(code.slice(1));
+ if(kind==='u')return Promise.resolve(JSON.parse(new TextDecoder().decode(bytes)));
+ return new Response(new Blob([bytes]).stream().pipeThrough(new DecompressionStream('deflate-raw'))).text().then(JSON.parse);
+}
+function shareLink(){
+ S.savedAt=S.savedAt||Date.now();
+ encodeState().then(function(code){
+  var url=location.origin+location.pathname+'#s='+code;
+  if(navigator.share){return navigator.share({title:'Chroniques de Valombre',text:'La partie à jour :',url:url}).then(function(){saveMsg='Lien envoyé.';render();},function(){});}
+  return navigator.clipboard.writeText(url).then(function(){saveMsg='Lien copié. Collez-le dans votre groupe de discussion : il suffit de l’ouvrir pour charger la partie.';render();},function(){exportTxt=url;saveMsg='Copie automatique refusée : copiez le lien ci-dessous.';render();});
+ }).catch(function(){saveMsg='Impossible de créer le lien ici. Utilisez « Copier en texte ».';render();});
+}
+function checkIncoming(){
+ var h=location.hash;if(h.indexOf('#s=')!==0)return;
+ var code=h.slice(3);
+ try{history.replaceState(null,'',location.pathname+'#groupe');}catch(e){}
+ decodeState(code).then(function(N){if(N&&N.heroes&&N.quests){incoming=N;render();window.scrollTo(0,0);}},function(){saveMsg='Le lien reçu est incomplet. Demandez-le à nouveau.';render();});
+}
 
 app.addEventListener('click',function(ev){var b=ev.target.closest('[data-a]');if(!b)return;act(b.getAttribute('data-a'),b.dataset);});
 app.addEventListener('keydown',function(ev){
@@ -536,9 +664,11 @@ app.addEventListener('keydown',function(ev){
  if(t.classList&&t.classList.contains('pin')){ev.preventDefault();act('place',t.dataset);}
 });
 app.addEventListener('change',function(ev){if(ev.target.id==='notes'){S.notes=ev.target.value;save();}});
-window.addEventListener('hashchange',function(){render();window.scrollTo(0,0);});
+window.addEventListener('hashchange',function(){if(location.hash.indexOf('#s=')===0){checkIncoming();return;}render();window.scrollTo(0,0);});
 
 render();
+renderDice(false);
+checkIncoming();
 if(window.claude&&typeof window.claude.use==='function'){
  window.claude.use('artifact').then(function(ns){if(ns&&typeof ns.publish==='function'){cap=ns;mode='shared';setStatus('Partagé avec le groupe','ok');}else{useLocal();}},function(){useLocal();});
 } else { useLocal(); }
